@@ -1,0 +1,5 @@
+
+
+new ArgoRolloutsStack(eksStack, "ArgoRolloutsStack", {
+    eksCluster: eksStack.eksCluster,
+});

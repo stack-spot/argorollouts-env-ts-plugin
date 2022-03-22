@@ -1,0 +1,10 @@
+{
+    "devDependencies": {
+      "@types/js-yaml": "^4.0.5"
+    },
+    "dependencies": {
+      "constructs": "^10.0.0",
+      "got": "^11.8.3",
+      "js-yaml": "^4.1.0"
+    }
+}

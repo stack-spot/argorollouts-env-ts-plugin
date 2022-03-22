@@ -1,0 +1,20 @@
+name: argorollouts-env-ts-plugin
+description: Adds Argo Rollouts to an EKS cluster.
+types:
+  - env
+
+hooks:
+  - type: edit
+    trigger: after-render
+    path: bin/{{project_name}}-env.ts
+    changes:
+      - insert:
+          line: 1
+          value: "import { ArgoRolloutsStack } from '../lib/argo-rollouts-stack';\n"
+          when:
+            not-exists: "import { ArgoRolloutsStack } from '../lib/argo-rollouts-stack';\n"
+      - insert:
+          line: -1
+          snippet: snippets/argorollouts-stack-new-instance.txt
+          when:
+            not-exists: "new ArgoRolloutsStack"
