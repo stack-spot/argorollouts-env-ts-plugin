@@ -19,7 +19,13 @@ export class ArgoRolloutsStack extends NestedStack {
                     }
                 });
 
-                props.eksCluster.addFargateProfile("argo-rollouts-fargate-profile", { selectors: [{ namespace: "argo-rollouts" }] });
+                props.eksCluster.addFargateProfile(
+                    "argo-rollouts-fargate-profile", 
+                    { 
+                        selectors: [{ namespace: "argo-rollouts" }],
+                        fargateProfileName: "argo-rollouts-fargate-profile"
+                    }
+                );
 
                 const manifest = await got.get("https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml").text();
                 console.info("Argo Rollouts manifests has been downloaded.");
