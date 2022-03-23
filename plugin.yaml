@@ -10,9 +10,9 @@ hooks:
     changes:
       - insert:
           line: 1
-          value: "import { ArgoRolloutsStack } from '../lib/argo-rollouts-stack';\n"
+          value: "import { ArgoRolloutsStack } from '../lib/argorollouts-stack';\n"
           when:
-            not-exists: "import { ArgoRolloutsStack } from '../lib/argo-rollouts-stack';\n"
+            not-exists: "import { ArgoRolloutsStack } from '../lib/argorollouts-stack';\n"
       - insert:
           line: -1
           snippet: snippets/argorollouts-stack-new-instance.txt
