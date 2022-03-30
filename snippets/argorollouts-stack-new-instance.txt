@@ -3,3 +3,7 @@
 new ArgoRolloutsStack(eksStack, "ArgoRolloutsStack", {
     eksCluster: eksStack.eksCluster,
 });
+
+new AlbIngressControllerStack(eksStack, "AlbIngressControllerStack", {
+  eksCluster: eksStack.eksCluster,
+});

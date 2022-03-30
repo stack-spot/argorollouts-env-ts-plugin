@@ -1,12 +1,14 @@
 import { NestedStack, NestedStackProps } from "aws-cdk-lib";
 import { Cluster } from "aws-cdk-lib/aws-eks";
 import { Construct } from "constructs";
-import * as yaml from "js-yaml";
 import got from "got";
+import { ManifestUtils } from "./common/manifest-utils";
 
 export class ArgoRolloutsStack extends NestedStack {
     constructor(scope: Construct, id: string, props: ArgoRolloutsStackProps) {
         super(scope, id, props);
+
+        const ARGO_ROLLOUTS_NAMESPACE = "argo-rollouts";
 
         (async () => {
             try {
@@ -15,31 +17,24 @@ export class ArgoRolloutsStack extends NestedStack {
                     "apiVersion": "v1",
                     "kind": "Namespace",
                     "metadata": {
-                        "name": "argo-rollouts"
+                        "name": ARGO_ROLLOUTS_NAMESPACE
                     }
                 });
 
                 props.eksCluster.addFargateProfile(
-                    "argo-rollouts-fargate-profile", 
-                    { 
-                        selectors: [{ namespace: "argo-rollouts" }],
+                    "argo-rollouts-fargate-profile",
+                    {
+                        selectors: [{ namespace: ARGO_ROLLOUTS_NAMESPACE }],
                         fargateProfileName: "argo-rollouts-fargate-profile"
                     }
                 );
 
                 const manifest = await got.get("https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml").text();
+
                 console.info("Argo Rollouts manifests has been downloaded.");
-                yaml.loadAll(manifest, function (doc) {
-                    const manifest = doc as Record<string, any>;
-                    const kind = manifest["kind"];
-                    const name = manifest["metadata"]["name"];
 
-                    manifest["metadata"]["namespace"] = "argo-rollouts";
+                ManifestUtils.apply(manifest, props.eksCluster, ARGO_ROLLOUTS_NAMESPACE, namespace);
 
-                    console.debug("Adding manifest: \n", manifest);
-
-                    props.eksCluster.addManifest(`${name}_${kind}`, doc as Record<string, any>).node.addDependency(namespace);
-                });
             } catch (error) {
                 console.log(error);
             }
